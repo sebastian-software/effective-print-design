@@ -28,6 +28,20 @@ CSS `pt` and Word `pt` are identical: 1 pt = 1/72 inch. Different fonts at the s
 | Text-align | Left (not justified) | Justify | Justify |
 | Hyphens | No | Yes | Yes |
 
+## Modular Scale Ratios
+
+Use named musical intervals as type scale ratios for intentional hierarchy:
+
+| Ratio | Name | Use case |
+|-------|------|----------|
+| 1.125 | Major second | Compact/dense (resumes, data-heavy) |
+| 1.200 | Minor third | General print (default recommendation) |
+| 1.250 | Major third | Slightly more dramatic |
+| 1.333 | Perfect fourth | Editorial, magazine layouts |
+| 1.414 | Augmented fourth | Academic papers, formal publications |
+
+For print, **minor third (1.2)** or **major second (1.125)** work best — print needs less size contrast than screen.
+
 ## Font Choice
 
 Both serif and sans-serif work well in print. The choice depends on brand identity. Classic pairings:
@@ -36,6 +50,15 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
 - **Sans-serif body + serif headings** — modern, clean
 - **All-serif** — academic, literary
 - **All-sans** — corporate, technical
+
+## Font Pairing Rules
+
+- **Match x-heights** between paired typefaces — if x-heights differ, fonts look mismatched even at correct point sizes
+- **Match historical period** — pair humanist serif with humanist sans (e.g., Palatino + Gill Sans), not with geometric sans (Futura)
+- **Contrast on one axis only** — vary serif/sans *or* weight *or* width, not all three
+- **Max 2–3 typefaces** per document — each additional font dilutes hierarchy
+- **Superfamilies** are the safest pairing: Source Sans + Source Serif, Noto Sans + Noto Serif, Lucida Sans + Lucida Serif
+- **Never pair two similar fonts** — two different serifs next to each other creates tension without clear hierarchy
 
 ## Font Stacks (System Fonts)
 
@@ -46,6 +69,8 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
     font-family: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif;
     font-size: 11pt;
     line-height: 1.35;
+    font-size-adjust: 0.465;           /* normalize x-height across fallbacks */
+    font-optical-sizing: auto;          /* enable optical size axis on variable fonts */
   }
   /* Sans-serif (alternative) */
   body {
@@ -59,6 +84,37 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
   }
 }
 ```
+
+## Optical Sizing
+
+Variable fonts with an `opsz` axis automatically adapt stroke weight and detail to the rendered size. German typography distinguishes three size categories:
+
+- **Konsultationsgrößen** (6–8pt) — captions, footnotes: thicker strokes, open counters
+- **Lesegrößen** (9–13pt) — body text: balanced for sustained reading
+- **Schaugrößen** (14pt+) — headings, display: refined details, tighter letterfitting
+
+```css
+body { font-optical-sizing: auto; }        /* default — enable for all sizes */
+
+/* Manual control for variable fonts */
+h1      { font-variation-settings: 'opsz' 48; }
+caption { font-variation-settings: 'opsz' 8; }
+```
+
+Fonts with good optical sizing: **Roboto Flex**, **Source Serif 4**, **Fraunces**, **Recursive**.
+
+## `font-size-adjust`
+
+Normalizes x-height across fallback fonts. If Charter is missing and Georgia loads, the browser adjusts Georgia's size to match Charter's x-height ratio. Now in Baseline (Chrome 127+, Firefox 3+, Safari 17.4+).
+
+```css
+body {
+  font-family: Charter, Cambria, Georgia, serif;
+  font-size-adjust: 0.465;  /* Charter's x-height / font-size ratio */
+}
+```
+
+Even 0.5pt differences in apparent size matter on paper — `font-size-adjust` prevents this.
 
 ## Text Wrapping & Hyphenation
 
@@ -91,6 +147,52 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
 ```
 
 **`text-wrap: pretty`** — Chrome 117+, Safari 19+. **`text-wrap: balance`** — Chrome 114+, Firefox 121+, Safari 17.5+. **`hyphens: auto`** requires `lang` attribute on `<html>`.
+
+### Justified Text: Mandatory Preconditions
+
+Justify **only** when both conditions are met:
+
+1. **Line length ≥ 50 characters** (ideally 60+)
+2. **Functioning hyphenation** (`hyphens: auto` + `lang` attribute)
+
+Without both, word-spacing rivers are unacceptable. For narrow columns (sidebars, captions), always use `text-align: left`.
+
+### Word Spacing for Justified Text
+
+A small negative `word-spacing` reduces rivers in justified text, mimicking InDesign's "desired word spacing" (~85–90% of default).
+
+```css
+p {
+  text-align: justify;
+  word-spacing: -0.05em;  /* tighten default word gaps slightly */
+}
+```
+
+## Paragraph Separation
+
+Two conventions — choose based on document type:
+
+### Spacing (Web/Article Convention)
+
+```css
+p { margin-bottom: 0.8em; }
+```
+
+Default for articles, reports, resumes. Familiar from screen.
+
+### Indentation (Book/Literary Convention)
+
+Traditional European/German book typography. Saves vertical space, better for long-form reading.
+
+```css
+p { margin: 0; }
+p + p { text-indent: 1em; }  /* indent all paragraphs except the first */
+```
+
+**Rules:**
+- First paragraph after heading, figure, blockquote, or list: **no indent** (`p + p` handles this automatically)
+- Indent size: **1em** (Bringhurst standard)
+- Never combine indentation with vertical spacing — use one or the other
 
 ## OpenType Features
 
@@ -131,6 +233,42 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
   }
 }
 ```
+
+## Stylistic Alternates
+
+For fonts with OpenType alternates — stylistic sets, swash, contextual alternates:
+
+```css
+@font-feature-values "My Font" {
+  @styleset { clean: 1; }       /* map name to ss01 */
+}
+
+body {
+  font-variant-alternates: styleset(clean);  /* use named set */
+  font-variant-alternates: contextual;       /* context-sensitive alternates */
+}
+
+/* Or directly via font-feature-settings */
+h1 { font-feature-settings: 'ss01' 1, 'swsh' 1; }
+```
+
+## Special Characters & Quotation Marks
+
+Set correct quotation marks per language using the `quotes` property:
+
+```css
+html[lang="de"] { quotes: "„" "\201C" "‚" "\2018"; }       /* German: „..." ‚...' */
+html[lang="en"] { quotes: "\201C" "\201D" "\2018" "\2019"; } /* English: "..." '...' */
+/* Or let the browser handle it: */
+q { quotes: auto; }
+```
+
+**German/European conventions for print:**
+- **En dash** `–` with spaces for parenthetical dashes (not em dash)
+- **En dash** `–` without spaces for ranges: 10–20, Jan.–März
+- **Narrow no-break space** (U+202F) between parts of abbreviations: z. B., d. h., u. a.
+- **Ellipsis** `…` (U+2026), not three periods
+- **Apostrophe** `'` (U+2019), never a prime `'`
 
 ## Letter-Spacing
 

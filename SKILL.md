@@ -45,6 +45,7 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 - Start with a clean-slate reset: strip backgrounds, shadows, filters to `transparent`/`none`
 - Blacklist approach: explicitly hide what doesn't belong (nav, sidebar, ads, buttons)
 - Use `print-color-adjust: exact` only where backgrounds carry meaning
+- **Generous whitespace** — too much rarely hurts, too little is fatal (cramped layouts are the #1 amateur mistake)
 
 ## Typography
 
@@ -52,11 +53,15 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 - Default: **11pt** body, line-height **1.35–1.4** (tighter than screen)
 - Target **45–75 characters** per line (ideal: 66)
 - `text-wrap: pretty` for body (multi-line optimizer), `balance` for headings
-- `hyphens: auto` for justified text (requires `lang` on `<html>`)
+- Justify **only** with line length ≥50 chars **and** `hyphens: auto` — both are mandatory; use `text-align: left` for narrow columns
+- `font-optical-sizing: auto` for variable fonts — thickens strokes at 8pt, refines at 24pt
+- `font-size-adjust` to normalize x-height across fallback fonts in stacks
 - OpenType: `oldstyle-nums` for body, `lining-nums tabular-nums` for tables
 - Never track lowercase body; add `letter-spacing: 0.05–0.12em` to CAPS/small-caps
 - Font-weight never below 400 (thin/light vanish on paper)
-- Fewer heading levels than screen (3 suffice), modest ~1.2x scale
+- Fewer heading levels than screen (3 suffice), modest ~1.2x scale (minor third)
+- Max 2–3 typefaces; pair by matching x-heights and historical period
+- Books: use `text-indent: 1em` on `p + p` (not `margin-bottom`) for paragraph separation
 - Avoid Times New Roman; prefer Georgia, Charter, Palatino
 
 ## Colors
@@ -105,4 +110,4 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 
 ## Sources
 
-Butterick's Practical Typography, Smashing Magazine, CSS-Tricks, A List Apart, Adrian Roselli, MDN, Piccalilli, Voussoir, Pimp my Type, WebKit blog, Gutenberg CSS.
+Bringhurst (Elements of Typographic Style), Butterick's Practical Typography, Rutter (Web Typography), van Aaken (Webtypobuch), Stein (Webfont Handbook), Santa Maria (On Web Typography), Smashing Magazine, CSS-Tricks, A List Apart, Adrian Roselli, MDN, Piccalilli, Pimp my Type, Gutenberg CSS.

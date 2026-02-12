@@ -122,6 +122,29 @@ Blacklist approach — explicitly hide what doesn't belong on paper.
 }
 ```
 
+## Baseline Grid / Vertical Rhythm
+
+All vertical spacing should be multiples of the base line-height. This creates the "invisible grid" that makes a page cohesive — exactly like InDesign's baseline grid. More achievable in print than on screen because page dimensions are fixed.
+
+**The technique:** Pick a base unit = body line-height. All margins, paddings, and line-heights for every element must be exact multiples.
+
+```css
+@media print {
+  :root { --rhythm: 15.4pt; }  /* 11pt * 1.4 line-height */
+
+  body     { font-size: 11pt; line-height: var(--rhythm); }
+  p        { margin: 0 0 var(--rhythm); }
+  h2       { font-size: 16pt; line-height: calc(2 * var(--rhythm));
+             margin-top: calc(2 * var(--rhythm)); margin-bottom: var(--rhythm); }
+  h3       { font-size: 13pt; line-height: var(--rhythm);
+             margin-top: calc(2 * var(--rhythm)); margin-bottom: 0; }
+  figure   { margin: var(--rhythm) 0; }
+  blockquote { margin: var(--rhythm) 0; padding: 0 var(--rhythm); }
+}
+```
+
+Headings with larger font-sizes get `line-height` set to 2x or 3x the rhythm unit. This ensures body text baselines across adjacent columns stay aligned.
+
 ## Resume: Sidebar + Main Grid
 
 ```css
