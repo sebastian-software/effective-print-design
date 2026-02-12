@@ -145,6 +145,10 @@ All vertical spacing should be multiples of the base line-height. This creates t
 
 Headings with larger font-sizes get `line-height` set to 2x or 3x the rhythm unit. This ensures body text baselines across adjacent columns stay aligned.
 
+**Duplex printing:** When printing on both sides of translucent paper (especially ≤80 gsm), baseline-aligned text on recto and verso prevents show-through distortion. Without alignment, faint reversed text bleeds through and degrades readability.
+
+**Don't be slavish:** Images, figures, and embedded media may have natural dimensions that break the rhythm. Let them — resume the grid beneath. The baseline grid governs text flow, not every element on the page.
+
 ## Resume: Sidebar + Main Grid
 
 ```css

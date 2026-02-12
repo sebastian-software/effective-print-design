@@ -56,12 +56,14 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 - Justify **only** with line length ≥50 chars **and** `hyphens: auto` — both are mandatory; use `text-align: left` for narrow columns
 - `font-optical-sizing: auto` for variable fonts — thickens strokes at 8pt, refines at 24pt
 - `font-size-adjust` to normalize x-height across fallback fonts in stacks
-- OpenType: `oldstyle-nums` for body, `lining-nums tabular-nums` for tables
+- `font-synthesis: none` — prevent browser from generating faux bold/italic (ugly on paper)
+- OpenType: `oldstyle-nums` for body, `lining-nums tabular-nums` for tables, `lining-nums` for headings
 - Never track lowercase body; add `letter-spacing: 0.05–0.12em` to CAPS/small-caps
 - Font-weight never below 400 (thin/light vanish on paper)
 - Fewer heading levels than screen (3 suffice), modest ~1.2x scale (minor third)
 - Max 2–3 typefaces; pair by matching x-heights and historical period
 - Books: use `text-indent: 1em` on `p + p` (not `margin-bottom`) for paragraph separation
+- Choose body faces with low-to-medium stroke contrast and open apertures — high contrast (Bodoni) for display only
 - Avoid Times New Roman; prefer Georgia, Charter, Palatino
 
 ## Colors
@@ -94,7 +96,8 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 ## Tables
 
 - `thead { display: table-header-group; }` — repeats headers on every page
-- `0.5pt solid` borders, `font-variant-numeric: lining-nums tabular-nums`
+- Minimize borders (one direction only); don't force `width: 100%` — size columns to data
+- `font-variant-numeric: lining-nums tabular-nums`, `line-height: 1` in cells
 - `tr { break-inside: avoid; }`
 
 ## Code Blocks

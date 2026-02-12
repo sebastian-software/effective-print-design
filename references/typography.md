@@ -9,13 +9,23 @@ CSS `pt` and Word `pt` are identical: 1 pt = 1/72 inch. Different fonts at the s
 | Element | Size | Line-height | Notes |
 |---------|------|-------------|-------|
 | Body text | 11pt | 1.35–1.4 | Serif or sans — depends on CI |
-| h1 | 22–24pt | 1.05–1.1 | |
+| h1 | 22–24pt | 1.05–1.1 | Below 1.0 OK for all-caps display |
 | h2 | 16–18pt | 1.1–1.15 | |
 | h3 | 13–14pt | 1.15–1.2 | |
 | h4 | 11pt bold | 1.2–1.3 | Same size as body, bold |
 | Sidenotes / marginalia | 8pt | 1.2–1.25 | |
-| Captions / footnotes | 8–9pt | 1.2–1.25 | |
+| Captions / footnotes | 8–9pt | 1.2–1.25 | Never below 75% of body size |
 | Code blocks | 9pt | 1.3–1.4 | Monospace |
+
+**Heading line-height below 1.0** is acceptable for large display headings (24pt+). Touching ascenders and descenders creates visual cohesion. For all-caps headings there are no descenders, so line-height can go even tighter.
+
+**Line-height validation:** Look at a capital H, mentally double its height. If the doubled letter reaches the baseline of the line above, line-height is too small for body text (van Aaken's "double cap-height" test).
+
+**Typographic color:** Heavier/darker typefaces need more line-height; lighter ones need less. The fixed 1.35–1.4 range is a starting point — adjust by squinting at the text block and evaluating its overall gray value.
+
+**Low x-height as space saver:** Fonts with small x-heights optically increase line spacing without changing the value. For tight page budgets (resumes, dense reports), deliberately choose a low-x-height font.
+
+**Functional text** (captions, labels, footnotes) should never be smaller than 75% of body size. Choose faces with open, distinct letterforms where I/l/1 and O/0 are clearly distinguishable.
 
 ### Document-Type Variations
 
@@ -42,6 +52,8 @@ Use named musical intervals as type scale ratios for intentional hierarchy:
 
 For print, **minor third (1.2)** or **major second (1.125)** work best — print needs less size contrast than screen.
 
+**Double-stranded scale:** For more nuanced sizing, use two meaningful values — e.g., body size (11pt) and column width (in pt) — with your chosen ratio to generate sizes with built-in relationships to the page geometry (Tim Brown's technique).
+
 ## Font Choice
 
 Both serif and sans-serif work well in print. The choice depends on brand identity. Classic pairings:
@@ -51,14 +63,40 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
 - **All-serif** — academic, literary
 - **All-sans** — corporate, technical
 
+### Selection Criteria for Body Text
+
+- **Stroke contrast:** Low-to-medium contrast creates smooth reading rhythm. High contrast (Bodoni, Didot) produces uneven texture — reserve for display/headlines only.
+- **Aperture openness:** Open counters and apertures (the openings in c, e, s, a) aid legibility, especially at small sizes (8–9pt). Closed apertures (Helvetica) make letterforms hard to distinguish.
+- **Typographic color:** Aim for a medium gray value when squinting at a text block. Too dark (heavy strokes) or too light (thin strokes) both reduce readability.
+- **Personality restraint:** Body type must be restrained — any visual quirk (whimsical tail on g, unusual ligatures) repeats thousands of times and becomes a distraction. Save personality for display type.
+
+### Headlines
+
+- **Condensed or slightly narrow typefaces** fit more characters per line on fixed-width print pages, preventing single-word orphan lines and awkward breaks that `text-wrap: balance` cannot always solve.
+- Condensed widths also create strong visual contrast with regular-width body text.
+
 ## Font Pairing Rules
 
 - **Match x-heights** between paired typefaces — if x-heights differ, fonts look mismatched even at correct point sizes
 - **Match historical period** — pair humanist serif with humanist sans (e.g., Palatino + Gill Sans), not with geometric sans (Futura)
+- **Match structural skeleton** — typefaces sharing the same geometry (dynamic/rational/geometric) pair well regardless of serif/sans classification (Rutter's skeleton/flesh/skin model)
 - **Contrast on one axis only** — vary serif/sans *or* weight *or* width, not all three
 - **Max 2–3 typefaces** per document — each additional font dilutes hierarchy
 - **Superfamilies** are the safest pairing: Source Sans + Source Serif, Noto Sans + Noto Serif, Lucida Sans + Lucida Serif
+- **Same designer** — typefaces from the same designer often share subtle stylistic thumbprints (e.g., Eric Gill's Joanna + Gill Sans)
+- **Same foundry** — some foundries explicitly design complementary families and list recommended pairings
 - **Never pair two similar fonts** — two different serifs next to each other creates tension without clear hierarchy
+
+## Font Safety
+
+Never declare `font-weight: bold` or `font-style: italic` unless the loaded font actually includes that weight/style variant. Browsers synthesize **faux bold** (by geometrically thickening strokes) or **faux italic** (by slanting) when the real variant is missing — the result looks crude, especially at 300 DPI on paper.
+
+```css
+/* Prevent browser from generating faux bold/italic */
+body { font-synthesis: none; }
+```
+
+Verify in DevTools that every `font-weight`/`font-style` request is matched by an actual font file.
 
 ## Font Stacks (System Fonts)
 
@@ -71,6 +109,7 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
     line-height: 1.35;
     font-size-adjust: 0.465;           /* normalize x-height across fallbacks */
     font-optical-sizing: auto;          /* enable optical size axis on variable fonts */
+    font-synthesis: none;               /* prevent faux bold/italic */
   }
   /* Sans-serif (alternative) */
   body {
@@ -84,6 +123,23 @@ Both serif and sans-serif work well in print. The choice depends on brand identi
   }
 }
 ```
+
+## Selective Glyph Substitution
+
+Use `unicode-range` to mix decorative glyphs from a different typeface — a classic typographic technique (e.g., a distinctive ampersand):
+
+```css
+@font-face {
+  font-family: DecorativeAmpersand;
+  src: url(spumante.woff2) format("woff2");
+  unicode-range: U+26;  /* only the & character */
+}
+h1, h2 {
+  font-family: DecorativeAmpersand, Charter, serif;
+}
+```
+
+The browser uses the decorative font only for matching characters; everything else falls through to the next font in the stack.
 
 ## Optical Sizing
 
@@ -99,6 +155,9 @@ body { font-optical-sizing: auto; }        /* default — enable for all sizes *
 /* Manual control for variable fonts */
 h1      { font-variation-settings: 'opsz' 48; }
 caption { font-variation-settings: 'opsz' 8; }
+
+/* Custom axes (beyond standard wght/wdth/opsz/ital/slnt) */
+.display { font-variation-settings: 'opsz' 48, 'XHGT' 1.0, 'CONT' 50; }
 ```
 
 Fonts with good optical sizing: **Roboto Flex**, **Source Serif 4**, **Fraunces**, **Recursive**.
@@ -137,6 +196,8 @@ Even 0.5pt differences in apparent size matter on paper — `font-size-adjust` p
     -webkit-hyphenate-limit-after: 2;
     hyphenate-limit-lines: 2;           /* max 2 consecutive hyphenated lines */
     -webkit-hyphenate-limit-lines: 2;
+    hyphenate-limit-zone: 8%;           /* allow slight rag to reduce hyphenation */
+    hyphenate-limit-last: always;       /* prevent stub of hyphenated word as last line */
   }
 
   /* Captions: balanced like headings */
@@ -147,6 +208,8 @@ Even 0.5pt differences in apparent size matter on paper — `font-size-adjust` p
 ```
 
 **`text-wrap: pretty`** — Chrome 117+, Safari 19+. **`text-wrap: balance`** — Chrome 114+, Firefox 121+, Safari 17.5+. **`hyphens: auto`** requires `lang` attribute on `<html>`.
+
+**`<wbr>`** (word break opportunity) — insert in HTML where long unbreakable strings (URLs, chemical names, identifiers) may break across lines *without* inserting a hyphen. Useful for print where long strings must fit within the measure.
 
 ### Justified Text: Mandatory Preconditions
 
@@ -191,8 +254,31 @@ p + p { text-indent: 1em; }  /* indent all paragraphs except the first */
 
 **Rules:**
 - First paragraph after heading, figure, blockquote, or list: **no indent** (`p + p` handles this automatically)
-- Indent size: **1em** (Bringhurst standard)
+- Indent size: **1em** (Bringhurst standard). For optical precision, match the line-height (e.g., if line-height is 15.4pt, use `text-indent: 15.4pt`) to create a "neat square of white space."
 - Never combine indentation with vertical spacing — use one or the other
+
+### Standfirst / Lead Paragraph
+
+A short opening paragraph set in a larger or different style to introduce the article. Common in editorial/magazine design.
+
+```css
+article > p:first-of-type {
+  font-size: 1.25em;
+  line-height: 1.3;
+  font-weight: 300;    /* or a different typeface */
+}
+```
+
+### Hanging Indent for Bibliographies
+
+For reference lists, use a hanging indent so the first line protrudes while continuation lines are indented:
+
+```css
+.bibliography li {
+  text-indent: -1.5em;
+  margin-left: 1.5em;
+}
+```
 
 ## OpenType Features
 
@@ -208,9 +294,19 @@ p + p { text-indent: 1em; }  /* indent all paragraphs except the first */
     font-variant-numeric: oldstyle-nums proportional-nums;
   }
 
-  /* Lining (uppercase) figures for tables — aligned columns */
+  /* Lining (uppercase) figures for tables and headings */
   table {
     font-variant-numeric: lining-nums tabular-nums;
+  }
+  h1, h2, h3 {
+    font-variant-numeric: lining-nums;  /* old-style looks wrong next to capitals */
+  }
+
+  /* Proper subscripts and superscripts (font glyphs, not browser shrink/shift) */
+  sub { font-variant-position: sub; }
+  sup { font-variant-position: super; }
+  @supports (font-variant-position: sub) {
+    sub, sup { vertical-align: baseline; font-size: inherit; }
   }
 
   /* Small caps for abbreviations */
@@ -223,6 +319,8 @@ p + p { text-indent: 1em; }  /* indent all paragraphs except the first */
   article p {
     hanging-punctuation: first allow-end last;
   }
+  /* Cross-browser fallback: negative indent sized in ch units */
+  blockquote p { text-indent: -1ch; }
 
   /* Drop cap */
   article > p:first-of-type::first-letter {
@@ -231,8 +329,20 @@ p + p { text-indent: 1em; }  /* indent all paragraphs except the first */
     font-weight: bold;
     margin-right: 0.05em;
   }
+  /* Variants: sunken cap (extends above text) and raised cap */
+  /* initial-letter: 3 2;  — spans 3 lines, baseline on line 2 (sunken) */
+  /* initial-letter: 3 1;  — spans 3 lines from baseline of line 1 (raised) */
+
+  /* Alternative opening: first-line run-in with small caps */
+  /*
+  article > p:first-of-type::first-line {
+    font-variant-caps: small-caps;
+  }
+  */
 }
 ```
+
+**Warning:** The `font` shorthand property resets `font-kerning` to its initial value. If you use `font:`, re-declare `font-kerning: normal` afterward.
 
 ## Stylistic Alternates
 
@@ -263,26 +373,51 @@ html[lang="en"] { quotes: "\201C" "\201D" "\2018" "\2019"; } /* English: "..." '
 q { quotes: auto; }
 ```
 
-**German/European conventions for print:**
-- **En dash** `–` with spaces for parenthetical dashes (not em dash)
+**Dashes:**
+- **En dash** `–` (U+2013) with non-breaking space before (`&nbsp;–`) for parenthetical dashes — prevents the dash from wrapping to a new line alone
 - **En dash** `–` without spaces for ranges: 10–20, Jan.–März
-- **Narrow no-break space** (U+202F) between parts of abbreviations: z. B., d. h., u. a.
+- **Em dash** `—` (U+2014) with hair spaces (`&#8202;`) on both sides in English typography
+- **Hyphen** `-` only for compound words and hyphenation
+
+**Spaces:**
+- **Narrow no-break space** (U+202F, `&#8239;`) between numbers and units (38 cm, 128 kB/s, § 21), parts of abbreviations (z. B., d. h.), and initials (D. H. Lawrence). Prefer U+202F (non-breaking) over U+2009 (breaking thin space) in all cases
+- **Thin space** (`&thinsp;`, U+2009) between nested quotation marks to prevent visual merging: "She said 'hello' " — insert thin space between ' and "
+
+**Math & dimension characters:**
+- **Multiplication sign** `×` (U+00D7, `&times;`) for dimensions: 210 × 297 mm — never the letter x
+- **Minus sign** `−` (U+2212, `&minus;`) for subtraction — not a hyphen (shorter, sits higher)
+- **Division sign** `÷` (U+00F7, `&divide;`) — not a forward slash
+
+**Other:**
 - **Ellipsis** `…` (U+2026), not three periods
 - **Apostrophe** `'` (U+2019), never a prime `'`
+- **Brackets in italic text:** Keep parentheses and brackets upright even in italic passages — italic brackets have an awkward unbalanced stance
 
 ## Letter-Spacing
 
 - **Body text:** `normal` (never track lowercase body)
-- **ALL CAPS / small-caps:** `letter-spacing: 0.05em` to `0.12em` + `font-variant-ligatures: no-common-ligatures`
+- **ALL CAPS / small-caps:** `letter-spacing: 0.05em` to `0.12em` + `font-variant-ligatures: no-common-ligatures` (ligatures must be disabled when letter-spacing is applied — a ligature is a single glyph whose internal spacing doesn't change with tracking, causing uneven gaps)
 - **Large display headings:** `letter-spacing: -0.01em` (tighten)
+- **Big, bold, wide display:** `letter-spacing: -0.03em` (the bigger/bolder/wider the font, the tighter the tracking)
+- **Centered tracked text:** Apply `margin-right` equal to the negative `letter-spacing` to compensate for the trailing space on the last character:
+
+```css
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-right: -0.1em;  /* eliminate trailing space for true centering */
+}
+```
 
 ## Hierarchy Principles
 
 1. Use **fewer heading levels** in print than on screen (3 usually suffice)
 2. Differentiate by **weight, style, caps, or spacing** — not just size
 3. **More space before** headings than after to group them with following content
-4. Modest scale (~1.2x between levels); print needs less contrast than screen
-5. Use **`text-box-trim`** (Chrome 133+, Safari 18.2+) for optically precise vertical spacing
+4. **Gestalt law of proximity:** A multi-line heading's internal line-height must always be tighter than its margin-top/margin-bottom — otherwise readers mis-group heading lines with surrounding content
+5. Modest scale (~1.2x between levels); print needs less contrast than screen
+6. Use **`text-box-trim`** (Chrome 133+, Safari 18.2+) for optically precise vertical spacing
 
 ## Resume Typography
 

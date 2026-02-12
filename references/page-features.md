@@ -124,6 +124,13 @@ figcaption::before {
 
 ```css
 @media print {
+  /* Proper sub/superscripts — use font's built-in glyphs, not browser shrink/shift */
+  sub { font-variant-position: sub; }
+  sup { font-variant-position: super; }
+  @supports (font-variant-position: sub) {
+    sub, sup { vertical-align: baseline; font-size: inherit; }
+  }
+
   sup.fnref {
     font-size: 75%;
     line-height: 0;
@@ -172,19 +179,46 @@ Use `<picture>` with `media="print"` source for high-res print variants.
 
 ## Tables
 
+**Design principles:** Size columns to their data, not the page width. Minimize borders — use rules in one direction only when needed. Group related rows with whitespace (Gestalt law of proximity), not zebra stripes.
+
 ```css
 @media print {
-  table { width: 100%; border-collapse: collapse; break-inside: auto; }
+  table { border-collapse: collapse; break-inside: auto; }
   thead { display: table-header-group; }
   tfoot { display: table-footer-group; }
   tr { break-inside: avoid; }
-  td, th { border: 0.5pt solid #999; padding: 4pt 6pt; font-size: 10pt; }
-
-  th {
-    background: #eee !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  caption { caption-side: bottom; font-size: 9pt; font-style: italic; margin-top: 4pt; }
+  td, th {
+    border-bottom: 0.5pt solid #ccc;
+    padding: 0.125em 0.5em 0.25em 0.5em;  /* asymmetric: less top, more bottom */
+    font-size: 10pt;
+    line-height: 1;                         /* tight in cells — columns are narrow */
+    font-variant-numeric: lining-nums tabular-nums;
   }
+  thead th {
+    border-bottom: 1pt solid #000;
+    font-weight: 700;
+  }
+}
+```
+
+### Decimal Alignment (CSS Text Level 4)
+
+```css
+td.numeric { text-align: "." center; }  /* align on decimal point */
+```
+
+Not yet widely supported in browsers — works in Prince/WeasyPrint. Progressive enhancement.
+
+### Oblique Column Headings
+
+When headings are longer than data, rotate to save horizontal space:
+
+```css
+th.rotated {
+  transform: rotate(-60deg);
+  transform-origin: bottom left;
+  white-space: nowrap;
 }
 ```
 
@@ -227,6 +261,25 @@ Use `<picture>` with `media="print"` source for high-res print variants.
     margin-left: 0;
     font-style: italic;
     break-inside: avoid;
+  }
+}
+```
+
+## Section Breaks / Fleurons
+
+For scene or section breaks within chapters, style `<hr>` as a decorative separator:
+
+```css
+@media print {
+  hr {
+    border: none;
+    text-align: center;
+    margin: 1.5em 0;
+  }
+  hr::after {
+    content: "* * *";               /* or a fleuron: "❧" or "§" */
+    letter-spacing: 0.5em;
+    font-size: 12pt;
   }
 }
 ```
