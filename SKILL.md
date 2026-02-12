@@ -20,7 +20,7 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 
 | Category | Reference |
 |----------|-----------|
-| Typography | [references/typography.md](references/typography.md) — font sizes, stacks, OpenType, text-wrap, hyphenation |
+| Typography | [references/typography.md](references/typography.md) — font sizes, stacks, OpenType, text-wrap, hyphenation, locale conventions |
 | Layout | [references/layout.md](references/layout.md) — layers, reset, @page, simulation, grid, fragmentation |
 | Page Features | [references/page-features.md](references/page-features.md) — headers/footers, counters, bleed, links, element styles |
 
@@ -65,6 +65,7 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 - Books: use `text-indent: 1em` on `p + p` (not `margin-bottom`) for paragraph separation
 - Choose body faces with low-to-medium stroke contrast and open apertures — high contrast (Bodoni) for display only
 - Avoid Times New Roman; prefer Georgia, Charter, Palatino
+- Quotation marks, dashes, number formatting, and spacing rules vary by locale — set `quotes` per `lang` or use `quotes: auto`; use a typographic preprocessor (SmartyPants, richtypo.js) for automated character substitution at build time
 
 ## Colors
 
