@@ -20,6 +20,14 @@ Gives Claude deep knowledge of print typography, paged media, and web-to-print p
 
 ## Install
 
+Via [skill.sh](https://skill.sh):
+
+```bash
+npx skill.sh install sebastian-software/effective-print-design
+```
+
+Or directly via Claude Code:
+
 ```bash
 claude skill add effective-print-design
 ```
@@ -42,4 +50,4 @@ Bringhurst's *Elements of Typographic Style*, Butterick's *Practical Typography*
 
 ## License
 
-[MIT](LICENSE.md)
+[MIT](LICENSE.md) — Copyright (c) 2026 [Sebastian Software GmbH](https://sebastian-software.de)
