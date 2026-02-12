@@ -73,6 +73,7 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 - Browsers strip backgrounds by default; restore selectively with `print-color-adjust: exact`
 - Keep chroma low for print — high-chroma OKLCH values may fall outside CMYK gamut
 - Replace box-shadows with borders; replace colored backgrounds with border patterns
+- Use pure black (`#000`) for body text — prints as 100% K (black ink only). Avoid "rich black" (CMYK 60/40/40/100) on text — causes registration issues and blurring at small sizes
 
 ## Fragmentation
 
@@ -109,7 +110,8 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 
 1. **Chrome DevTools:** Cmd+Shift+P > "Emulate CSS print media type"
 2. **Print Preview:** Cmd+P (shows actual pagination)
-3. **Actual printers** — laser and inkjet render differently
+3. **Playwright:** `page.emulateMedia({ media: 'print' })` + `page.pdf()` for automated PDF generation and visual regression tests
+4. **Actual printers** — laser and inkjet render differently
 
 ## Sources
 

@@ -211,6 +211,8 @@ Even 0.5pt differences in apparent size matter on paper — `font-size-adjust` p
 
 **`<wbr>`** (word break opportunity) — insert in HTML where long unbreakable strings (URLs, chemical names, identifiers) may break across lines *without* inserting a hyphen. Useful for print where long strings must fit within the measure.
 
+**`&shy;`** (soft hyphen, U+00AD) — suggests a break point where a hyphen *will* appear if the browser breaks there. Use for compound words, technical terms, or proper nouns that `hyphens: auto` gets wrong. The hyphen is invisible unless the break occurs. For large-scale automation, server-side hyphenation libraries (e.g., Hypher, Hyphenopoly) can insert soft hyphens at build time.
+
 ### Justified Text: Mandatory Preconditions
 
 Justify **only** when both conditions are met:
