@@ -24,6 +24,21 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 | Layout | [references/layout.md](references/layout.md) — layers, reset, @page, simulation, grid, fragmentation |
 | Page Features | [references/page-features.md](references/page-features.md) — headers/footers, counters, bleed, links, element styles |
 
+## Print vs. Screen
+
+| | Print | Desktop | Mobile |
+|---|---|---|---|
+| **Units** | `pt` | `rem` / `px` | `rem` / `px` |
+| **Layout** | Fixed page (A4 / Letter) | Fluid, `max-width` | Fluid, single-column |
+| **Colors** | OKLCH; B&W first, CMYK gamut | OKLCH / RGB | OKLCH / RGB |
+| **Typography** | 11pt, serif, justify, hyphens | 16px+, variable | 16px+, left-align |
+| **Line-height** | 1.35–1.4 (tight) | 1.5–1.6 | 1.5–1.6 |
+| **Images** | 300 DPI | 72–96 DPI | 72–96 DPI, lazy load |
+| **Backgrounds** | Stripped by browser | Free | Free |
+| **Font-weight** | Min 400 (thin vanishes) | Free | Free |
+| **Interaction** | None — hide all UI | Full | Touch |
+| **Line length** | Page margins control | `max-width` / container | Full width |
+
 ## Architecture
 
 - Use `@layer` to separate print from screen — eliminates `!important` wars
@@ -47,8 +62,9 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 ## Colors
 
 - **Design for black & white first** — most users print monochrome
+- OKLCH works for print — browser converts to sRGB/PDF; L-channel maps directly to perceived gray value
 - Browsers strip backgrounds by default; restore selectively with `print-color-adjust: exact`
-- Avoid neon/saturated RGB (outside CMYK gamut)
+- Keep chroma low for print — high-chroma OKLCH values may fall outside CMYK gamut
 - Replace box-shadows with borders; replace colored backgrounds with border patterns
 
 ## Fragmentation
