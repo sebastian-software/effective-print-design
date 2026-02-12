@@ -94,7 +94,7 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 
 - **Never dump raw URLs inline** — clutter the layout, nobody types them
 - Use numbered footnotes (CSS counters) or a single QR code, or both
-- Expand abbreviations: `abbr[title]::after { content: " (" attr(title) ")"; }`
+- Expand abbreviations on paper (see [page-features.md](references/page-features.md))
 
 ## Tables
 

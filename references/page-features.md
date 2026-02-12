@@ -124,12 +124,7 @@ figcaption::before {
 
 ```css
 @media print {
-  /* Proper sub/superscripts — use font's built-in glyphs, not browser shrink/shift */
-  sub { font-variant-position: sub; }
-  sup { font-variant-position: super; }
-  @supports (font-variant-position: sub) {
-    sub, sup { vertical-align: baseline; font-size: inherit; }
-  }
+  /* Sub/superscripts: see OpenType section in typography.md */
 
   sup.fnref {
     font-size: 75%;
