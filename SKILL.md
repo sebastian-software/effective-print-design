@@ -20,9 +20,10 @@ You are an expert in CSS print design, paged media, and web-to-print production.
 
 | Category | Reference |
 |----------|-----------|
-| Typography | [references/typography.md](references/typography.md) — font sizes, stacks, OpenType, text-wrap, hyphenation, locale conventions |
+| Typography | [references/typography.md](references/typography.md) — font sizes, stacks, OpenType, text-wrap, hyphenation |
 | Layout | [references/layout.md](references/layout.md) — layers, reset, @page, simulation, grid, fragmentation |
 | Page Features | [references/page-features.md](references/page-features.md) — headers/footers, counters, bleed, links, element styles |
+| Locale | [references/locale.md](references/locale.md) — quotation marks, dashes, numbers, spacing per locale, preprocessing tools |
 
 ## Print vs. Screen
 
